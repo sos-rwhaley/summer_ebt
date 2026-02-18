@@ -64,6 +64,18 @@
 var user_language_code = get_browser_language();
 console.log("Browser language code: " + user_language_code);
 
+function get_browser_language() {
+    if (navigator.languages && navigator.languages.length) {
+        return get_language_iso_code(navigator.languages[0]);
+    } else {
+        return get_language_iso_code(navigator.language) || get_language_iso_code(navigator.userLanguage) || get_language_iso_code(navigator.browserLanguage) || "en";
+    };
+};
+
+function get_language_iso_code(language) {
+    return language.slice(0, 2);
+};
+
 // TODAY'S DATE
 // get today's date -- for selecting correct income eligibility guidelines; month has 1 added to it because month is zero-indexed; guidelines change on July 1 each year
 const today = new Date();
