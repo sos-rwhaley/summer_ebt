@@ -291,6 +291,8 @@ function load_intro() {
         intro_header,
         intro_body
     );
+
+    document.getElementById("navigator_content").innerHTML = "";
     document.getElementById("navigator_content").appendChild(intro_fragment);
     
     // var next_button_element = document.getElementById("next_button");
@@ -1051,3 +1053,4 @@ back_button.addEventListener("click", go_back);
 </script>
 
 </html>
+
