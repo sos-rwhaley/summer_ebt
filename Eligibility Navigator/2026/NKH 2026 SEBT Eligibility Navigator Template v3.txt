@@ -87,6 +87,43 @@ const this_month = today.getMonth() + 1;
 var current_question_code;
 
 // PAGE STRUCTURE
+// LANGUAGE
+
+// get languages
+var translations = __TRANSLATIONS__;
+
+// put buttons in content area
+var language_button_dictionary = {};
+
+function load_language_buttons() {
+    document.getElementById("back_button").style.visibility = "hidden";
+    document.getElementById("next_button").style.visibility = "hidden";
+    
+    var language_button_area = document.getElementById("navigator_content");
+
+    var language_buttons_fragment = new DocumentFragment();
+
+    Object.keys(translations).forEach((language_code) => {
+        var language = translations[language_code];
+        language_button_dictionary[language] = Object.assign(document.createElement("button"), {
+            id: language_code,
+            name: language_code,
+            className: "usa-button",
+            style: "margin-bottom: 1rem",
+            innerHTML: language
+        });
+        language_button_dictionary[language].addEventListener("click", () => {
+            user_language_code = language_code;
+            console.log("Language set to: " + language_code);
+        });
+        language_button_dictionary[language].addEventListener("click", load_intro);
+        language_buttons_fragment.append(language_button_dictionary[language]);
+    });
+
+    language_button_area.innerHTML = "";
+    language_button_area.appendChild(language_buttons_fragment);
+};
+
 // HEADER
 var headers = __HEADERS__;
 
@@ -270,15 +307,18 @@ function set_button_view(introduction) {
     switch (true) {
         case current_question_code === undefined:
             back_button.style.visibility = "hidden";
+            next_button.style.visibility = "visible";
             next_button.textContent = introduction.call_to_action;
             break;
         case current_question_code === "SCP":
             back_button.style.visibility = "hidden";
-            next_button.textContent = "Next";
+            next_button.style.visibility = "visible";
+            next_button.textContent = navigation_buttons[user_language_code]["next_button_label"];
             break;
         default:
             back_button.style.visibility = "visible";
-            next_button.textContent = "Next";
+            next_button.style.visibility = "visible";
+            next_button.textContent = navigation_buttons[user_language_code]["next_button_label"];
             break;
     };
 };
@@ -986,7 +1026,7 @@ var reset_navigator = function() {
     eligibility_determination = null;
     // revert "next" button
     var next_button_element = document.getElementById("next_button");
-    next_button_element.innerHTML = "Next";
+    next_button_element.innerHTML = navigation_buttons[user_language_code]["next_button_label"];
     next_button_element.removeEventListener("click", reset_navigator);
     next_button_element.addEventListener("click", determine_eligibility);
     next_button_element.addEventListener("click", set_button_view);
@@ -999,7 +1039,7 @@ load_header();
 load_buttons();
 load_footer();
 
-load_intro();
+load_language_buttons();
 
 var next_button = document.getElementById("next_button");
 next_button.addEventListener("click", determine_eligibility);
