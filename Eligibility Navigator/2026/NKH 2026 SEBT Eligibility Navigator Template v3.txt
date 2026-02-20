@@ -9,10 +9,13 @@
 </head>
 
 <body style="padding: 1rem;">
-    <div id="navigator_logo" name="navigator_logo" class="usa-logo" style="max-width: 150px;">
-    </div>
     
-    <div id="language_selector" name="language_selector">
+    <div id="page_header" name="page_header" style="display: flex; flex-direction: row; max-width: 30rem;">
+        <div id="navigator_logo" name="navigator_logo" class="usa-logo" style="flex: 1.25">
+        </div>
+        <span style="flex: 0.5"></span>
+        <div id="language_selector" name="language_selector" style="flex: 1.25">
+        </div>
     </div>
 
     <section id="navigator_header" name="navigator_header" class="usa-header usa-header--basic" style="font-size: 1.5rem; font-weight: bold; padding-top: 1rem">
