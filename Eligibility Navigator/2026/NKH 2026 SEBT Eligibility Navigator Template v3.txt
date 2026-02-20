@@ -103,7 +103,11 @@ function load_language_buttons() {
     
     var language_button_area = document.getElementById("navigator_content");
 
-    var language_buttons_fragment = new DocumentFragment();
+    var language_buttons_container = Object.assign(document.createElement("div"), {
+        id: "language_buttons",
+        name: "language_buttons",
+        style: "display: flex; flex-direction: column;"
+    });
 
     Object.keys(translations).forEach((language_code) => {
         var language = translations[language_code];
@@ -111,7 +115,7 @@ function load_language_buttons() {
             id: language_code,
             name: language_code,
             className: "usa-button",
-            style: "margin-bottom: 1rem",
+            style: "margin-top: 1rem;",
             innerHTML: language
         });
         language_button_dictionary[language].addEventListener("click", () => {
@@ -122,15 +126,58 @@ function load_language_buttons() {
         language_button_dictionary[language].addEventListener("click", load_buttons);
         language_button_dictionary[language].addEventListener("click", load_footer);
         language_button_dictionary[language].addEventListener("click", load_intro);
-        language_buttons_fragment.append(language_button_dictionary[language]);
+        language_buttons_container.appendChild(language_button_dictionary[language]);
     });
 
     language_button_area.innerHTML = "";
-    language_button_area.appendChild(language_buttons_fragment);
+    language_button_area.appendChild(language_buttons_container);
 };
 
 // HEADER
+// logo, title, and language selector
 var headers = __HEADERS__;
+
+function create_language_selector() {
+    var language_selector_area = document.getElementById("language_selector");
+    
+    var language_selector = Object.assign(document.createElement("select"), {
+        id: "language_selector",
+        name: "language_selector",
+        className: "usa-select"
+    });
+
+    language_selector.addEventListener("change", () => {
+        user_language_code = language_selector.value;
+        load_header();
+        load_buttons();
+        load_footer();
+        switch (current_question_code) {
+            case (undefined):
+                load_intro();
+                break;
+            default:
+                if (eligibility_determination == null) {
+                    display_question(user_language_code, current_question_code);
+                } else {
+                    determine_eligibility();
+                };
+                break;
+        };
+    });
+
+    Object.keys(translations).forEach((language_code) => {
+        var this_option = Object.assign(document.createElement("option"), {
+            value: language_code,
+            textContent: translations[language_code]
+        });
+        language_selector.appendChild(this_option);
+    });
+
+    language_selector_area.innerHTML = "";
+    language_selector_area.appendChild(language_selector);
+
+    language_selector.value = user_language_code;
+};
 
 function load_header() {
     console.log("Loading header...");
@@ -300,11 +347,15 @@ function load_intro() {
         intro_header,
         intro_body
     );
+
+    document.getElementById("navigator_content").innerHTML = "";
     document.getElementById("navigator_content").appendChild(intro_fragment);
     
     // var next_button_element = document.getElementById("next_button");
     // next_button_element.textContent = this_intro.call_to_action;
     set_button_view(this_intro);
+
+    create_language_selector();
 };
 
 function set_button_view(introduction) {
@@ -334,6 +385,11 @@ function set_button_view(introduction) {
 
 // QUESTIONS
 var questions = __QUESTIONS__;
+
+// placeholders for school and household size questions
+var school_dropdown_instructions = __SCHOOL_DROPDOWN_INSTRUCTIONS__;
+
+var household_size_instructions = __HOUSEHOLD_SIZE_INSTRUCTIONS__;
 
 // get current question code
 var current_question_code;
@@ -397,7 +453,7 @@ function display_question(language_code, question_code) {
                     className: "usa-input",
                     id: question_code,
                     name: question_code,
-                    placeholder: "numbers only"
+                    placeholder: household_size_instructions[user_language_code]
                 });
                 answer_fragment.append(answer_fragment_fieldset);
                 answer_fragment_fieldset.appendChild(household_size_input);
@@ -420,7 +476,7 @@ function display_question(language_code, question_code) {
                 })
                 var school_combo_box_blank_option = Object.assign(document.createElement("option"), {
                     value: "",
-                    textContent: "Select a school from this list"
+                    textContent: school_dropdown_instructions[user_language_code]
                 });
                 school_combo_box.appendChild(school_combo_box_blank_option);
                 schools.forEach((school) => {
