@@ -9,10 +9,11 @@
 </head>
 
 <body style="padding: 1rem;">
-    <!-- START CODE FOR LOGO -->
     <div id="navigator_logo" name="navigator_logo" class="usa-logo" style="max-width: 150px;">
     </div>
-    <!-- END CODE FOR LOGO -->
+    
+    <div id="language_selector" name="language_selector">
+    </div>
 
     <section id="navigator_header" name="navigator_header" class="usa-header usa-header--basic" style="font-size: 1.5rem; font-weight: bold; padding-top: 1rem">
     </section>
